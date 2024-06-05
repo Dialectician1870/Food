@@ -1,5 +1,5 @@
 window.addEventListener('DOMContentLoaded', () => {
-
+    // tabs
     const tabs = document.querySelectorAll('.tabheader__item'),
         tabsParent = document.querySelector('.tabheader__items'),
         tabsContent = document.querySelectorAll('.tabcontent');
@@ -36,5 +36,65 @@ window.addEventListener('DOMContentLoaded', () => {
             });
         }
         
-    })
+    });
+
+
+    // timer
+
+    const deadline = '2024-05-06';
+
+    setClock();
+
+    function getTimeRemaining() {
+        const t = Date.parse(deadline) - Date.parse(new Date()),
+            days = Math.floor(t / (1000 * 60 * 60 * 24)),
+            hours = Math.floor(t / (1000 * 60 * 60) % 24),
+            minutes = Math.floor(t / (1000 * 60) % 60),
+            seconds = Math.floor(t / 1000 % 60);
+
+        return {
+            'total' : t,
+            'days' : days,
+            'hours' : hours,
+            'minutes' : minutes,
+            'seconds' : seconds
+        }
+    }
+
+    function setClock() {
+        const timer = document.querySelector('.timer'),
+            days = timer.querySelector('#days'),
+            hours = timer.querySelector('#hours'),
+            minutes = timer.querySelector('#minutes'),
+            seconds = timer.querySelector('#seconds'),
+            timeInterval = setInterval(updateClock, 1000);
+
+        updateClock();
+
+        function updateClock() {
+            const t = getTimeRemaining();
+
+            days.innerHTML = getZero(t.days);
+            hours.innerHTML = getZero(t.hours);
+            minutes.innerHTML = getZero(t.minutes);
+            seconds.innerHTML = getZero(t.seconds);
+
+            if (t.total <= 0) {
+                clearInterval(timeInterval);
+                days.innerHTML = '00';
+                hours.innerHTML = '00';
+                minutes.innerHTML = '00';
+                seconds.innerHTML = '00';
+            }
+        }
+    }
+
+    function getZero(num) {
+        if (0 <= num && num < 10) {
+            return `0${num}`;
+
+        } else {
+            return num;
+        }
+    }
 })
