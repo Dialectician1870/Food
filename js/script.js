@@ -1,5 +1,6 @@
 window.addEventListener('DOMContentLoaded', () => {
     // tabs
+
     const tabs = document.querySelectorAll('.tabheader__item'),
         tabsParent = document.querySelector('.tabheader__items'),
         tabsContent = document.querySelectorAll('.tabcontent');
@@ -41,7 +42,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
     // timer
 
-    const deadline = '2024-05-06';
+    const deadline = '2024-06-06';
 
     setClock();
 
@@ -97,4 +98,39 @@ window.addEventListener('DOMContentLoaded', () => {
             return num;
         }
     }
+
+    // Modal
+
+    const btns = document.querySelectorAll('[data-modal]'),
+        modal = document.querySelector('.modal'),
+        closeBtn = document.querySelector('[data-close]')
+
+    btns.forEach(item => {
+        item.addEventListener('click', () => {
+            modal.classList.add('show');
+            modal.classList.remove('hide');
+            document.body.style.overflow = 'hidden';
+            // не позволяет скролить окно
+        });
+    });
+
+    closeBtn.addEventListener('click', closeModal);
+
+    modal.addEventListener('click', (event) => {
+        if (event.target === modal) {
+            closeModal();
+        }
+    });
+
+    function closeModal() {
+        modal.classList.remove('show');
+        modal.classList.add('hide');
+        document.body.style.overflow = '';
+    }
+
+    document.addEventListener('keydown', (e) => {
+        if (e.code === 'Escape' && modal.classList.contains('show')) {
+            closeModal();
+        }
+    });
 })
