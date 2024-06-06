@@ -42,7 +42,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
     // timer
 
-    const deadline = '2024-06-06';
+    const deadline = '2024-07-06';
 
     setClock();
 
@@ -103,15 +103,11 @@ window.addEventListener('DOMContentLoaded', () => {
 
     const btns = document.querySelectorAll('[data-modal]'),
         modal = document.querySelector('.modal'),
-        closeBtn = document.querySelector('[data-close]')
+        closeBtn = document.querySelector('[data-close]'),
+        modalTimerId = setTimeout(openModal, 1000);
 
     btns.forEach(item => {
-        item.addEventListener('click', () => {
-            modal.classList.add('show');
-            modal.classList.remove('hide');
-            document.body.style.overflow = 'hidden';
-            // не позволяет скролить окно
-        });
+        item.addEventListener('click', openModal);
     });
 
     closeBtn.addEventListener('click', closeModal);
@@ -122,15 +118,34 @@ window.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    document.addEventListener('keydown', (e) => {
+        if (e.code === 'Escape' && modal.classList.contains('show')) {
+            closeModal();
+        }
+    });
+
+    function openModal() {
+        modal.classList.add('show');
+        modal.classList.remove('hide');
+        document.body.style.overflow = 'hidden';
+        clearInterval(modalTimerId);
+    }
+
     function closeModal() {
         modal.classList.remove('show');
         modal.classList.add('hide');
         document.body.style.overflow = '';
     }
 
-    document.addEventListener('keydown', (e) => {
-        if (e.code === 'Escape' && modal.classList.contains('show')) {
-            closeModal();
+    function showModalByScroll() {
+        if(window.scrollY + document.documentElement.clientHeight >= document.documentElement.scrollHeight) {
+            openModal();
+            window.removeEventListener('scroll', showModalByScroll);
+            // удаляет обработчик, после первого раза, когда юезр
+            // проскролил страницу до конца
+            // Т.е. модальное окно появиться только один раз
         }
-    });
+    }
+
+    window.addEventListener('scroll', showModalByScroll);
 })
