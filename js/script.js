@@ -299,4 +299,37 @@ window.addEventListener('DOMContentLoaded', function() {
             closeModal();
         }, 4000);
     }
+
+
+    const parentElement = document.querySelector('.offer__slider-counter'),
+        numberOfSlide = parentElement.querySelector('#current'),
+        slideBtns = parentElement.querySelectorAll('div'),
+        slidePicture = document.querySelector('.offer__slide').querySelector('img');
+
+    const slidePictures = {
+        1: 'img/slider/food-12.jpg',
+        2: 'img/slider/olive-oil.jpg',
+        3: 'img/slider/pepper.jpg',
+        4: 'img/slider/paprika.jpg'
+    };
+
+    slideBtns.forEach((item, i) => {
+        item.addEventListener('click', () => {
+            changeSlide(i);
+        });
+    });
+
+    function changeSlide(i) {
+        let currentNumber = +numberOfSlide.textContent;
+
+        if (i == 0) {
+            currentNumber == 1 ? currentNumber = 4 : currentNumber--;
+        } else {
+            currentNumber == 4 ? currentNumber = 1 : currentNumber++;
+        }
+
+        numberOfSlide.textContent = currentNumber;
+
+        slidePicture.src = slidePictures[currentNumber];
+    }
 });
