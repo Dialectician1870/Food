@@ -1,3 +1,4 @@
+
 window.addEventListener("DOMContentLoaded", function () {
 	// Tabs
 
@@ -296,8 +297,24 @@ window.addEventListener("DOMContentLoaded", function () {
 		current = document.querySelector("#current"),
 		slidesWrapper = document.querySelector(".offer__slider-wrapper"),
 		width = window.getComputedStyle(slidesWrapper).width,
-		slidesField = document.querySelector(".offer__slider-inner");
+		slidesField = document.querySelector(".offer__slider-inner"),
+        carouselIndicators = document.createElement('div');
 
+    carouselIndicators.classList.add('carousel-indicators');
+    slidesWrapper.appendChild(carouselIndicators);
+
+    for (let i = 0; i < slides.length; i++) {
+        const dot = document.createElement('div');
+        dot.classList.add('dot');
+        carouselIndicators.appendChild(dot);
+    }
+
+    slidesWrapper.style.position = 'relative';
+
+    dots = document.querySelectorAll('.dot');
+
+    dots[slideIndex - 1].style.opacity = '1';
+    
 	if (slides.length < 10) {
 		total.textContent = `0${slides.length}`;
 		current.textContent = `0${slideIndex}`;
@@ -336,6 +353,12 @@ window.addEventListener("DOMContentLoaded", function () {
 		} else {
 			current.textContent = slideIndex;
 		}
+
+        dots.forEach(item => {
+            item.style.opacity = .5;
+        });
+
+        dots[slideIndex - 1].style.opacity = '1';
 	});
 
 	prev.addEventListener("click", () => {
@@ -358,5 +381,76 @@ window.addEventListener("DOMContentLoaded", function () {
 		} else {
 			current.textContent = slideIndex;
 		}
+
+        dots.forEach(item => {
+            item.style.opacity = .5;
+        });
+
+        dots[slideIndex - 1].style.opacity = '1';
 	});
+
+    //Indicators
+
+    dots.forEach((item, i) => {
+        item.addEventListener('click', () => {
+            dots.forEach(item => item.style.opacity = .5);
+            item.style.opacity = 1;
+            current.textContent = `0${i + 1}`;
+
+            offset = 0;
+            offset = +width.slice(0, width.length - 2) * i;
+            slidesField.style.transform = `translateX(-${offset}px)`;
+        });
+    });
+
+    // Calculating eating
+
+    const sex = document.querySelectorAll('#gender div'),
+        inputForms = document.querySelectorAll('.calculating__choose_medium input'),
+        activity = document.querySelectorAll('.calculating__choose_big div'),
+        result = document.querySelector('.calculating__result span');
+
+    let sexConst = -161, activityConst = 1.38;
+    let height = 0, weight = 0, age = 0;
+
+    sex.forEach((item, i) => {
+        item.addEventListener('click', () => {
+            sex.forEach(item => item.classList.remove('calculating__choose-item_active'));
+            item.classList.add('calculating__choose-item_active');
+            i == 0 ? sexConst = -161 : sexConst = +5;
+            updateResult();
+        });
+    });
+
+    activity.forEach((item, i) => {
+        item.addEventListener('click', () => {
+            activity.forEach(item => item.classList.remove('calculating__choose-item_active'));
+            item.classList.add('calculating__choose-item_active');
+            switch (i) {
+                case 0: activityConst = 1.2; break;
+                case 1: activityConst = 1.38; break;
+                case 2: activityConst = 1.55; break;
+                case 3: activityConst = 1.73; break;
+            }
+            updateResult();
+        });
+    });
+
+    inputForms.forEach(item => {
+        item.addEventListener('input', () => {
+            height = parseFloat(document.querySelector('#height').value) || 0;
+            weight = parseFloat(document.querySelector('#weight').value) || 0;
+            age = parseFloat(document.querySelector('#age').value) || 0;
+            updateResult();
+        });
+    });
+
+    function updateResult() {
+        result.textContent = (height == 0 || weight == 0 || age == 0) ? '____' : calcKkal(sexConst, activityConst, height, weight, age);
+    }
+    
+    function calcKkal(sex, activity, height, weight, age) {
+        return Math.round((weight * 10 + height * 6.25 - age * 5 + sex) * activity);
+    }
+
 });
